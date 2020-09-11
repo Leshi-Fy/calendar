@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <style>
+            table.calendar {
+            font-size: 14px;
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        table.calendar th{
+            background: #f5f5f5;
+            color: #999;
+        }
+        table.calendar th,
+        table.calendar td {
+            border: 1px solid #e1e1e1;
+            padding: 0;
+            height: 32px;
+            line-height: 32px;
+            text-align: center;
+        }
+
+        table.calendar td.current{
+            background: #1890ff;
+            color: #fff;
+        }
+
+        table.calendar th.pre,
+        table.calendar th.next{
+            color: #1890ff;
+            cursor: pointer;
+        }
+        table.calendar th.date{
+            color: #000;
+        }
+    </style>
+    <script>
+        $(function(){
+            var pre=$('.pre');
+            var next=$('.next');
+
+            //获取现在的时间
+            var currentYear=new Date().getFullYear();
+            var currentMon=new Date().getMonth()+1;
+            if (currentMon<10){
+                $('.date').html(currentYear+'.0'+currentMon)
+            }else{
+                $('.date').html(currentYear+'.'+currentMon)
+            }
+            getDate(currentYear,currentMon)
+            // 设置上一月与下一月
+            pre.click(function(){
+                var date=$('.date').html().split('.');
+                var year=date[0];
+                var month=Number(date[1])-1;
+                if (month<=0){
+                    month=12;
+                    $('.date').html(--year+'.'+month)
+                }else{
+                    if(month<10){
+                        $('.date').html(year+'.0'+month)
+                    }else{
+                        $('.date').html(year+'.'+month)
+                    }
+                }
+                getDate(year,month);
+            });
+            next.click(function(){
+                var date=$('.date').html().split('.');
+                var year=date[0];
+                var month=Number(date[1])+1;
+                if (month==13){
+                    month=1;
+                    $('.date').html(++year+'.0'+month)
+                }else{
+                    if(month<10){
+                        $('.date').html(year+'.0'+month)
+                    }else{
+                        $('.date').html(year+'.'+month)
+                    }
+                }
+                getDate(year,month)
+            });
+
+            //获取日期的方法
+            function getDate(year,month){
+                var date=String(new Date(year,month,0)).split(' ');
+                var weekstart=String(new Date(year,month-1,1)).split(' ')[0],weekend=String(new Date(year,month,1)).split(' ')[0];
+                var dayNum=date[2];
+                var start,end;
+                var html;
+                // //获取现在的日期
+                var nowYear=new Date().getFullYear();
+                var nowMonth=new Date().getMonth()+1;
+                var nowDay=new Date().getDate();
+                // var nowYear=2020;
+                // var nowMonth=1;
+                // var nowDay=9;
+                if (weekstart=='Mon') start=1;
+                if (weekstart=='Tue') start=2;
+                if (weekstart=='Wed') start=3;
+                if (weekstart=='Thu') start=4;
+                if (weekstart=='Fri') start=5;
+                if (weekstart=='Sat') start=6;
+                if (weekstart=='Sun') start=7;
+                if (weekend=='Mon') end=0;
+                if (weekend=='Tue') end=6;
+                if (weekend=='Wed') end=5;
+                if (weekend=='Thu') end=4;
+                if (weekend=='Fri') end=3;
+                if (weekend=='Sat') end=2;
+                if (weekend=='Sun') end=1;
+                for (var i=1;i<start;i++){
+                    html=html+'<td></td>';
+                }
+                for (var j=0;j<dayNum;j++){
+                    var index=(j+start)%7;
+                    if(index==0){
+                        if(month==nowMonth&&j+1==nowDay&&year==nowYear){
+                            html=html+'<td class=current>'+(j+1)+'</td>';
+                        }else{
+                            html=html+'<td>'+(j+1)+'</td>';
+                        }
+                        html='<tr>'+html+'</tr>';
+                    }else{
+                        if(month==nowMonth&&j+1==nowDay&&year==nowYear){
+                            html=html+'<td class=current>'+(j+1)+'</td>';
+                        }else{
+                            html=html+'<td>'+(j+1)+'</td>';
+                        }
+                        
+                    }
+                              
+                }
+                for (var k=0;k<end;k++){
+                    html=html+'<td></td>';
+                }
+                $('tbody').html(html);
+            }
+        })
+        
+    </script>
+</head>
+<body>
+    <body>
+        <div id="jsContainer">
+            <table class="calendar">
+                <thead>
+                    <tr><th class="pre"><</th><th colspan="5" class="date"></th><th class="next">></th></tr>
+                    <tr><th>一</th><th>二</th><th>三</th><th>四</th><th>五</th><th>六</th><th>日</th></tr>
+                </thead>
+                <tbody>
+                    <!-- <tr><td></td><td></td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+                    <tr><td>6</td><td>7</td><td>8</td><td class="current">9</td><td>10</td><td>11</td><td>12</td></tr>
+                    <tr><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td></tr>
+                    <tr><td>20</td><td>21</td><td>22</td><td>23</td><td>24</td><td>25</td><td>26</td></tr>
+                    <tr><td>27</td><td>28</td><td>29</td><td>30</td><td>31</td><td></td><td></td></tr> -->
+                </tbody>
+            </table>
+        </div>
+
+</body>
+</html>
